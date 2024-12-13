@@ -69,7 +69,11 @@ h1{
 	font-family: 'Syne';
 	font-size: 22px;
 	font-weight: 800;
-	color: #B1663C
+	color: #B1663C;
+}
+
+header a{
+	text-decoration: none;
 }
 
 h1 > span {
@@ -105,6 +109,10 @@ nav a {
 	font-family: 'Work Sans';
 	cursor: pointer;
 	color: black;
+}
+
+#btn-login-gras {
+	font-weight: bold;
 }
 
 nav img{
@@ -203,13 +211,13 @@ margin: auto;
 	flex-direction: column;
 }
 
-#contact input {
+#contact input, #connexion-form input{
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
-#contact label {
+#contact label,  #connexion-form label{
 	margin: 2em 0 1em 0;
 }
 #contact textarea {
@@ -234,3 +242,29 @@ footer {
 	margin: 2em
 }
 
+/******************************************** PAGE LOGIN *****************************************************/
+
+#main-login{
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	align-items: center;
+	width: 35%;
+	margin: auto;
+	gap: 30px;
+	top: 150px;
+}
+
+#connexion-form{
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+#main-login a{
+	align-self: center;
+	color: #535353;
+	font-family: 'Syne';
+	font-weight: 500;
+	font-size: 14px;
+}

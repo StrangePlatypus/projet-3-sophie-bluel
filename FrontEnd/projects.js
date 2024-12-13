@@ -1,9 +1,3 @@
-import { genererPageAccueil } from "./main.js"
-
-genererPageAccueil()
-
-const mainContainer = document.querySelector("main")
-
 // RECUPERATION DES PROJETS
 
 // Mise en place d'une récupération localStorage
@@ -115,29 +109,3 @@ btnHotelRest.addEventListener("click", function () {
     document.querySelector(".gallery").innerHTML = ""
     genererProjects(projectsHotelRest)
 })
-
-// CREATION DE LA PAGE DE LOGIN
-function genererLogin() {
-    const mainContainer = document.querySelector("main")
-    mainContainer.innerHTML = ""
-    console.log(mainContainer)
-}
-
-// EVENTLISTENER PROJETS
-const btnProjets = document.getElementById("btn-portfolio")
-btnProjets.addEventListener("click", function () {
-    mainContainer.innerHTML =""
-    genererPageAccueil()
-    genererBoutons(categories)
-    genererProjects(projects)
-})
-
-// EVENTLISTENER LOGIN
-
-const btnLogin = document.getElementById("btn-login")
-btnLogin.addEventListener("click", function () {
-    mainContainer.innerHTML =""
-    genererLogin()
-    
-})
-
