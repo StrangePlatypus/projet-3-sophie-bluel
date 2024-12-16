@@ -149,7 +149,7 @@ a:hover {
 	font-family: 'Work sans';
 	font-weight: 400;
 	font-size: 16px;
-	color: #3D3D3D;
+	color: #535353;
 }
 
 #portfolio h2 {
@@ -195,7 +195,7 @@ a:hover {
 }
 #contact {
 	width: 50%;
-margin: auto;
+	margin: auto;
 }
 #contact > * {
 	text-align: center;
@@ -239,7 +239,7 @@ input[type="submit"]{
 footer {
 	display: flex;
 	justify-content: flex-end;
-	margin: 2em
+	margin: 2em;
 }
 
 /******************************************** PAGE LOGIN *****************************************************/
@@ -247,12 +247,10 @@ footer {
 #main-login{
 	display: flex;
 	flex-direction: column;
-	position: relative;
 	align-items: center;
 	width: 35%;
 	margin: auto;
-	gap: 30px;
-	top: 150px;
+	padding: 5% 0%;
 }
 
 #connexion-form{
@@ -261,10 +259,61 @@ footer {
 	width: 100%;
 }
 
-#main-login a{
+#main-login a, #main-login p{
 	align-self: center;
 	color: #535353;
 	font-family: 'Syne';
 	font-weight: 500;
 	font-size: 14px;
+}
+
+#main-login p{
+	margin-top: 30px;
+}
+
+#btn-connexion{
+	font-family: 'Syne';
+	font-weight: 700;
+	color: white;
+	background-color: #1D6154;
+	margin : 2em auto ;
+	width: 180px;
+	text-align: center;
+	border-radius: 60px ;
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	cursor: pointer;
+}
+
+#bandeau{
+	display: flex;
+	width: 100vw;
+	height: 50px;
+	background: black;
+	justify-content: center;
+	align-items: center;
+	gap: 15px;
+	position: relative;
+	left: calc(-50vw + 50%);
+}
+
+#bandeau p{
+	color: #ffffff;
+	font-family: 'Work Sans';
+	font-weight: 400;
+	font-size: 14px;
+}
+
+#bandeau i{
+	color: #ffffff;
+}
+
+.btn-modifier {
+	font-family: 'Work Sans';
+	font-size: 14px;
+	font-weight: 400;
+	color: black;
+	text-decoration: none;
 }
