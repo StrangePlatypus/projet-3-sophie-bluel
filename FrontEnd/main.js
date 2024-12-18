@@ -1,150 +1,156 @@
-import {genererBandeau, genererFormContact, genererLogin, genererIntroduction, genererPortfolio, genererBoutons, genererProjects } from "./containers.js"
+// On dit que allProjects est un tableau (format Array)
+let allProjects = []
+// On dit que allCategories est un objet Set() pour y stocker les valeurs plus tard
+const allCategories = new Set()
+const gallery = document.querySelector(".gallery")
+let token = sessionStorage.getItem("token")
 
-
-// RECUPERATION DES PROJETS
-// Mise en place d'une récupération localStorage
-let projects = window.localStorage.getItem('projects')
-// Si le localStorage est vide, récupération sur l'API
-if (projects === null) {
-    const reponse = await fetch("http://localhost:5678/api/works")
-    projects = await reponse.json()
-    //Transformation des pièces en format JSON
-    const valeurProjects = JSON.stringify(projects)
-    // Stockage des informations dans le localStorage
-    window.localStorage.setItem('projects', valeurProjects)
-} else {
-    // On utilise les données de 'projets'
-    projects = JSON.parse(projects)
+async function initAccueil() {
+    // On récupère les données de works et categories
+    allProjects = await getData("works")
+    const categories = await getData("categories")
+    // On ajoute chaque catégorie de la liste des catégories récupérées à la variable AllCategories
+    for (const cat of categories) {
+        allCategories.add(cat)
+    }
+    // On génère tous les projets
+    genererProjects()
+    // Si on a le token, la page change et on ajoute l'eventListener du bouton logout
+    if (token !== null) {
+        modifierPage()
+        ajoutListenerLogout()
+        // Sinon, on génère les boutons et on ajoute l'eventListener du bouton login
+    } else {
+        genererBoutons()
+        ajoutListenerLogin()
+    }
 }
 
-// RECUPERATION DES CATEGORIES
-let categories = window.localStorage.getItem('categories')
-if (categories === null) {
-    let response = await fetch("http://localhost:5678/api/categories")
-    categories = await response.json()
-    const valeurCategories = JSON.stringify(categories)
-    window.localStorage.setItem('categories', valeurCategories)
-} else {
-    categories = JSON.parse(categories)
+initAccueil()
+
+// RECUPERATION DES PROJETS ET DES CATEGORIES ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// En fonction du type de données souhaité
+async function getData(type) {
+    try {
+        // On récupère via l'API les données du type voulu (categories ou works)
+        const reponse = await fetch(`http://localhost:5678/api/${type}`)       
+        return reponse.json()
+    } catch {
+        // En cas d'erreur lors de la récupération on renvoie un console.log
+        console.log(`Erreur lors de la récupérations des ${type}`, error)
+    }
 }
 
-const mainContainer = document.querySelector("main")
+// ON GENERE LES PROJETS
+function genererProjects(filter = 0) {
+    let filteredProjects = allProjects
+    if (filter != 0) {
+        filteredProjects = filteredProjects.filter(projects => projects.categoryId == filter)
+    }
+    gallery.innerHTML = ""
+    const fragment = document.createDocumentFragment()
+    for (const project of filteredProjects) {
+        const figure = document.createElement("figure")
+        figure.dataset.id = project.id
+        figure.innerHTML = `<img src="${project.imageUrl}" alt="${project.title}">
+                            <figcaption>${project.title}</figcaption>`
+        fragment.appendChild(figure)
+    }
+    gallery.appendChild(fragment)
+}
 
-genererIntroduction()
-genererPortfolio()
-genererBoutons(categories)
-genererProjects(projects)
-genererFormContact()
+// GESTION DES BOUTONS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function genererBoutons() {
+    const divButtons = document.querySelector(".buttons")
+    // création d'un fragment pour améliorer le web reflow
+    const fragment = document.createDocumentFragment()
+    // On crée le bouton 'Tous' (catégorie qui existe pas dans l'API)
+    const btnAll = document.createElement("button")
+    btnAll.classList.add("btn-filter")
+    btnAll.classList.add("btn-selected")
+    btnAll.dataset.id = 0
+    btnAll.textContent = "Tous"
+    fragment.appendChild(btnAll)
+    // Pour chaque categorie de toutes les catégories, on crée un élément button avec un data-id = categorie.id
+    for (const categorie of allCategories) {
+        const button = document.createElement("div")
+        button.classList.add("btn-filter")
+        button.textContent = categorie.name
+        button.dataset.id = categorie.id
+        fragment.appendChild(button)
+    }
+    // On inscrit le fragment dans la div et on ajout le eventListener
+    divButtons.appendChild(fragment)
+    ajoutListenerFiltres()
+}
 
-// GESTION DES BOUTONS /////////////////////////////////////////////////////////////////
+function ajoutListenerFiltres() {
+    const filtres = document.querySelectorAll(".btn-filter")
+    // Pour chaque filtre parmi les filtres
+    for (const filtre of filtres) {
+        filtre.addEventListener("click", function(event) {
+            // On empêche la page de s'actualiser
+            event.preventDefault()
+            // On récupère le data-id du bouton qui a été cliqué
+            const button = event.target
+            const buttonId = button.dataset.id
+            // On génére les projets en fonction du data-id du bouton cliqué
+            genererProjects(buttonId)
+            // On modifie la class du bouton qui était selectionné et... 
+            document.querySelector(".btn-selected").classList.remove("btn-selected")
+            // ... On l'ajoute au bouton qui vient d'être cliqué
+            button.classList.add("btn-selected")
+        }
+        )
+    }
+}
 
-// Bouton "TOUS"
-const btnAll = document.querySelector("#btn-all")
-btnAll.addEventListener("click", function () {
-    document.querySelector(".gallery").innerHTML = "";
-    genererProjects(projects)
-})
-
-// Bouton "OBJETS"
-const btnObjects = document.querySelector(".btn1")
-
-btnObjects.addEventListener("click", function () {
-    const projectsObjects = projects.filter(function (projects) {
-        return projects.categoryId == btnObjects.id
+// GESTION DES BOUTONS LOGIN LOGOUT //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function ajoutListenerLogin() {
+    const linkLogin = document.getElementById("btn-login")
+    linkLogin.addEventListener("click", function () {
+        window.location.href = "login.html"
     })
-    document.querySelector(".gallery").innerHTML = ""
-    genererProjects(projectsObjects)
-})
+}
 
-// Bouton "APPARTEMENTS"
-const btnApartments = document.querySelector(".btn2")
-
-btnApartments.addEventListener("click", function () {
-    const projectsApartments = projects.filter(function (projects) {
-        return projects.categoryId == btnApartments.id
+function ajoutListenerLogout(){
+    const linkLogout = document.getElementById("btn-logout")
+    linkLogout.addEventListener("click", function(){
+        const bandeau = document.getElementById("bandeau")
+        bandeau.classList.add("hidden")
+        linkLogout.id = "btn-login"
+        linkLogout.innerText = "login"
+        const btnModifier = document.querySelector(".btn-modifier")
+        btnModifier.innerHTML = ""
+        ajoutListenerLogin()
+        sessionStorage.clear()
+        genererBoutons()
+        ajoutListenerLogin()
     })
-    document.querySelector(".gallery").innerHTML = ""
-    genererProjects(projectsApartments)
-})
+}
+
+// MODIFICATION DE LA PAGE APRES CONNEXION //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function modifierPage(){
+    const bandeau = document.getElementById("bandeau")
+        bandeau.classList.remove("hidden")
+        const linkLogin = document.getElementById("btn-login")
+        linkLogin.id = "btn-logout"
+        linkLogin.innerText = "logout"
+        const titrePortfolio = document.getElementById("titre-portfolio")
+        const btnModifier = document.createElement("button")
+        btnModifier.classList.add("btn-modifier")
+        btnModifier.innerHTML = '<i class="fa-regular fa-pen-to-square"></i> modifier'
+        titrePortfolio.after(btnModifier)
+}
 
 
-// Bouton "HOTEL & RESTAURANT"
-const btnHotelRest = document.querySelector(".btn3")
-
-btnHotelRest.addEventListener("click", function () {
-    const projectsHotelRest = projects.filter(function (projects) {
-        return projects.categoryId == btnHotelRest.id
-    })
-    document.querySelector(".gallery").innerHTML = ""
-    genererProjects(projectsHotelRest)
-})
-
-// GESTION DE LA PAGE DE CONNEXION /////////////////////////////////////////////////////
-
-function ajoutListenerConnexion() {
-    const loginForm = document.querySelector("#connexion-form")
-    loginForm.addEventListener("submit", function (event) {
+// GESTION DE LA MODALE //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function ajoutListenerModifier(){
+    const btnModifier = document.querySelector(".btn-modifier")
+    btnModifier.addEventListener("click", function(event){
         event.preventDefault()
-        const infosLogin = {
-            email: event.target.querySelector('[name=email').value,
-            password: event.target.querySelector('[name=motDePasse]').value
-        }
-        const infoLoginJSON = JSON.stringify(infosLogin)
-        const response = fetch("http://localhost:5678/api/users/login", {
-            method: "POST",
-            headers: {
-                "accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: infoLoginJSON
-        }).then((response) =>{
-        console.log(response.ok)
-        if (response.ok == true) {
-            console.log("ok")
-            const mainContainer = document.getElementById("main-login")
-            mainContainer.innerHTML = ""
-            mainContainer.id = ""
-            const linkLogin = document.getElementById("btn-login-gras")
-            linkLogin.id = "btn-logout"
-            linkLogin.innerText = "logout"
-            genererBandeau()
-            genererIntroduction()
-            genererPortfolio()
-            genererProjects(projects)
-            const titrePortfolio = document.getElementById("titre-portfolio")
-            const btnModifier = document.createElement("a")
-            btnModifier.href = "#"
-            btnModifier.classList.add("btn-modifier")
-            btnModifier.innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Modifier'
-            titrePortfolio.after(btnModifier)
-        } else {
-            const btnLogin = document.getElementById("btn-connexion")
-            const messageErreur = document.createElement("p")
-            messageErreur.innerText = "Erreur dans l’identifiant ou le mot de passe"
-            btnLogin.before(messageErreur)
-            console.log(messageErreur)
-        }
-    })
+        // création modale  
     })
 }
 
-const linkLogin = document.getElementById("btn-login")
-linkLogin.addEventListener("click", function(){
-    linkLogin.id = "btn-login-gras"
-    mainContainer.innerHTML = ""
-    genererLogin()
-    ajoutListenerConnexion()
-})
-
-const linkAccueil = document.getElementById("logo")
-linkAccueil.addEventListener("click", function(){
-    mainContainer.id = ""
-    linkLogin.id = "btn-login"
-    mainContainer.innerHTML = ""
-    genererIntroduction()
-    genererPortfolio()
-    genererBoutons(categories)
-    genererProjects(projects)
-    genererFormContact()
-})
-
+// function genererModale(){}
