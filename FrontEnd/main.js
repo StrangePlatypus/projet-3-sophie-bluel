@@ -4,6 +4,15 @@ let allProjects = []
 const allCategories = new Set()
 const gallery = document.querySelector(".gallery")
 let token = sessionStorage.getItem("token")
+let userId = sessionStorage.getItem("userId")
+let newProject = {
+    id: 0,
+    title: "string",
+    imageUrl: "string",
+    categoryId: "string",
+    userId: 0
+}
+
 
 async function initAccueil() {
     // On récupère les données de works et categories
@@ -33,7 +42,7 @@ initAccueil()
 async function getData(type) {
     try {
         // On récupère via l'API les données du type voulu (categories ou works)
-        const reponse = await fetch(`http://localhost:5678/api/${type}`)       
+        const reponse = await fetch(`http://localhost:5678/api/${type}`)
         return reponse.json()
     } catch {
         // En cas d'erreur lors de la récupération on renvoie un console.log
@@ -88,7 +97,7 @@ function ajoutListenerFiltres() {
     const filtres = document.querySelectorAll(".btn-filter")
     // Pour chaque filtre parmi les filtres
     for (const filtre of filtres) {
-        filtre.addEventListener("click", function(event) {
+        filtre.addEventListener("click", function (event) {
             // On empêche la page de s'actualiser
             event.preventDefault()
             // On récupère le data-id du bouton qui a été cliqué
@@ -113,9 +122,9 @@ function ajoutListenerLogin() {
     })
 }
 
-function ajoutListenerLogout(){
+function ajoutListenerLogout() {
     const linkLogout = document.getElementById("btn-logout")
-    linkLogout.addEventListener("click", function(){
+    linkLogout.addEventListener("click", function () {
         const bandeau = document.getElementById("bandeau")
         bandeau.classList.add("hidden")
         linkLogout.id = "btn-login"
@@ -130,27 +139,190 @@ function ajoutListenerLogout(){
 }
 
 // MODIFICATION DE LA PAGE APRES CONNEXION //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function modifierPage(){
+function modifierPage() {
     const bandeau = document.getElementById("bandeau")
-        bandeau.classList.remove("hidden")
-        const linkLogin = document.getElementById("btn-login")
-        linkLogin.id = "btn-logout"
-        linkLogin.innerText = "logout"
-        const titrePortfolio = document.getElementById("titre-portfolio")
-        const btnModifier = document.createElement("button")
-        btnModifier.classList.add("btn-modifier")
-        btnModifier.innerHTML = '<i class="fa-regular fa-pen-to-square"></i> modifier'
-        titrePortfolio.after(btnModifier)
+    bandeau.classList.remove("hidden")
+    const linkLogin = document.getElementById("btn-login")
+    linkLogin.id = "btn-logout"
+    linkLogin.innerText = "logout"
+    const titrePortfolio = document.getElementById("titre-portfolio")
+    const btnModifier = document.createElement("button")
+    btnModifier.classList.add("btn-modifier", "modal-trigger")
+    btnModifier.innerHTML = '<i class="fa-regular fa-pen-to-square"></i> modifier'
+    titrePortfolio.after(btnModifier)
+    ajoutListenerModifier()
+    genererPhotosModale()
 }
 
-
 // GESTION DE LA MODALE //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function ajoutListenerModifier(){
+function ajoutListenerModifier() {
     const btnModifier = document.querySelector(".btn-modifier")
-    btnModifier.addEventListener("click", function(event){
+    btnModifier.addEventListener("click", function (event) {
         event.preventDefault()
-        // création modale  
+        const modaleContainer = document.querySelector(".modal-container")
+        modaleContainer.classList.remove("hidden")
+        ajoutListenerModalTrigger()
     })
 }
 
-// function genererModale(){}
+function ajoutListenerModalTrigger() {
+    const modalTrigger = document.querySelectorAll(".modal-trigger")
+    modalTrigger.forEach(trigger => trigger.addEventListener("click", function () {
+        const modaleContainer = document.querySelector(".modal-container")
+        modaleContainer.classList.add("hidden")
+        const titreModale = document.querySelector(".titre-modale")
+        titreModale.innerText = "Galerie photo"
+        const btnValider = document.querySelector("#btn-valider")
+        btnValider.classList.add("hidden")
+        const btnAdd = document.querySelector("#btn-add-modale")
+        btnAdd.classList.remove("hidden")
+        const formNouveauProjet = document.querySelector("#formNouveauProjet")
+        formNouveauProjet.classList.add("hidden")
+        const projetsModale = document.getElementById("projets-modale")
+        projetsModale.classList.remove("hidden")
+        const btnBack = document.querySelector(".back-modale")
+        btnBack.classList.add("hidden")
+        const divInput = document.querySelector("#img-input")
+        divInput.classList.remove("hidden")
+        const divUpload = document.querySelector("#img-upload")
+        divUpload.classList.add("hidden")
+        divUpload.innerHTML = ""
+        ajoutListenerModifier()
+    }))
+}
+
+async function genererPhotosModale() {
+    const projetsModale = document.querySelector("#projets-modale")
+    projetsModale.innerHTML = ""
+    allProjects = await getData("works")
+    const fragment = document.createDocumentFragment()
+    for (let i = 0; i < allProjects.length; i++) {
+        const figure = document.createElement("figure")
+        figure.classList.add("figure-modale")
+        figure.innerHTML = `<img src="${allProjects[i].imageUrl}" alt="${allProjects[i].title}">`
+        const trashBtn = document.createElement("button")
+        trashBtn.classList.add("trash-btn")
+        trashBtn.innerHTML = `<i class="fa-solid fa-trash-can"></i>`
+        trashBtn.id = allProjects[i].id
+        figure.appendChild(trashBtn)
+        fragment.appendChild(figure)
+    }
+    projetsModale.appendChild(fragment)
+    ajoutListenerDelete()
+    ajoutListenerAjouterProjet()
+    ajoutListenerProjetUpload()
+}
+
+function ajoutListenerBack() {
+    const btnBack = document.querySelector(".back-modale")
+    btnBack.addEventListener("click", function () {
+        const projetsModale = document.getElementById("projets-modale")
+        projetsModale.classList.remove("hidden")
+        btnBack.classList.add("hidden")
+        const btnValider = document.querySelector("#btn-valider")
+        btnValider.classList.add("hidden")
+        const titreModale = document.querySelector(".titre-modale")
+        titreModale.innerText = "Galerie photo"
+        const btnAdd = document.querySelector("#btn-add-modale")
+        btnAdd.classList.remove("hidden")
+        const formNouveauProjet = document.querySelector("#formNouveauProjet")
+        formNouveauProjet.classList.add("hidden")
+        const divInput = document.querySelector("#img-input")
+        divInput.classList.remove("hidden")
+        const divUpload = document.querySelector("#img-upload")
+        divUpload.classList.add("hidden")
+        divUpload.innerHTML = ""
+    })
+}
+
+// GESTION AJOUT ET SUPPRESSION DE PROJETS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function ajoutListenerDelete() {
+    const deleteButtons = document.querySelectorAll(".trash-btn")
+    deleteButtons.forEach(deleteButton => {
+        deleteButton.addEventListener("click", function () {
+            const projectId = deleteButton.id
+            fetch(`http://localhost:5678/api/works/${projectId}`, {
+                method: "DELETE",
+                headers: {
+                    "accept": "/",
+                    "Authorization": "Bearer" + token,
+                    "resquestContent-Type": "multipart/form-data"
+                }
+            }).then(response => console.log(response.status))
+
+        })
+    })
+}
+
+function ajoutListenerAjouterProjet() {
+    const btnAjouter = document.querySelector("#btn-add-modale")
+    btnAjouter.addEventListener("click", async function () {
+        const projetsModale = document.querySelector("#projets-modale")
+        projetsModale.classList.add("hidden")
+        const btnBack = document.querySelector(".back-modale")
+        btnBack.classList.remove("hidden")
+        const btnValider = document.querySelector("#btn-valider")
+        btnValider.classList.remove("hidden")
+        const titreModale = document.querySelector(".titre-modale")
+        titreModale.innerText = "Ajout photo"
+        const btnAdd = document.querySelector("#btn-add-modale")
+        btnAdd.classList.add("hidden")
+
+        const formNouveauProjet = document.querySelector("#formNouveauProjet")
+        formNouveauProjet.classList.remove("hidden")
+        const listeCategories = document.getElementById("catNouveauProjet")
+        listeCategories.innerHTML = ""
+        const catNeutre = document.createElement("option")
+        catNeutre.innerText = ""
+        listeCategories.appendChild(catNeutre)
+        const fragment = document.createDocumentFragment()
+        const allCategories = await getData("categories")
+        for (const categorie of allCategories) {
+            const option = document.createElement("option")
+            option.value = categorie.id
+            option.innerText = categorie.name
+            fragment.appendChild(option)
+        }
+        listeCategories.appendChild(fragment)
+        ajoutListenerBack()
+    })
+}
+
+
+function ajoutListenerProjetUpload() {
+    let newProject = {
+        id: 0,
+        title: "string",
+        imageUrl: "string",
+        categoryId: "string",
+        userId: 0
+    }
+    const imgInput = document.getElementById("upload")
+    imgInput.addEventListener("change", function () {
+        const file = imgInput.files[0]
+        const messageErreur = document.querySelector("#size-error")
+        if (file != null) {
+            const tailleOk = 4194304
+            if (file.size > tailleOk) {
+                messageErreur.classList.remove("hidden")
+            } else {
+                const img = document.createElement("img")
+                img.classList.add("choosen-img")
+                img.file = file
+                img.src = URL.createObjectURL(file)
+                img.alt = img.title = file.name
+                const divInput = document.querySelector("#img-input")
+                divInput.classList.add("hidden")
+                const divUpload = document.querySelector("#img-upload")
+                divUpload.classList.remove("hidden")
+                divUpload.appendChild(img)
+                newProject.title = img.title
+                newProject.imageUrl = img.src
+                messageErreur.classList.add("hidden")
+            }
+        }
+        console.log(newProject)
+    })
+}
+

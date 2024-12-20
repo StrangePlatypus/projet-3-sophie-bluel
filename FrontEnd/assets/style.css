@@ -3,19 +3,87 @@
    License: none (public domain)
 */
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -23,43 +91,63 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
 	display: block;
 }
 
-.hidden{
+.hidden {
 	display: none !important;
 }
 
 body {
 	line-height: 1;
 }
-ol, ul {
+
+ol,
+ul {
 	list-style: none;
 }
-blockquote, q {
+
+blockquote,
+q {
 	quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
 	content: '';
 	content: none;
 }
+
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
 /** end reset css**/
 body {
 	max-width: 1140px;
-	margin:auto;
+	margin: auto;
 	padding: 0px 10px;
-	font-family: 'Work Sans' ;
+	font-family: 'Work Sans';
 	font-size: 14px;
 	background-color: #FFFEF8;
 }
+
 header {
 	display: flex;
 	justify-content: space-between;
@@ -67,7 +155,7 @@ header {
 	max-width: 100%;
 }
 
-header a{
+header a {
 	text-decoration: none;
 }
 
@@ -75,7 +163,7 @@ section {
 	margin: 50px 0
 }
 
-h1{
+h1 {
 	display: flex;
 	flex-direction: column;
 	font-family: 'Syne';
@@ -84,21 +172,21 @@ h1{
 	color: #B1663C;
 }
 
-h1 > span {
+h1>span {
 	font-family: 'Work Sans';
-	font-size:10px;
+	font-size: 10px;
 	letter-spacing: 0.1em;
-;
+	;
 }
 
-h2{
+h2 {
 	font-family: 'Syne';
 	font-weight: 700;
 	font-size: 30px;
 	color: #1D6154
 }
 
-h3{
+h3 {
 	font-family: 'Work Sans';
 	font-size: 26px;
 	font-weight: 400;
@@ -111,7 +199,7 @@ nav ul {
 	gap: 20px;
 }
 
-nav ul li a{
+nav ul li a {
 	font-size: 1.2em;
 	text-decoration: none;
 	font-family: 'Work Sans';
@@ -123,7 +211,7 @@ nav ul li a{
 	font-weight: bold;
 }
 
-nav img{
+nav img {
 	height: 20px;
 }
 
@@ -150,6 +238,7 @@ li:hover {
 #introduction article {
 	flex: 1
 }
+
 #introduction h2 {
 	margin-bottom: 1em;
 }
@@ -167,14 +256,14 @@ li:hover {
 	margin-bottom: 1em;
 }
 
-.buttons{
+.buttons {
 	display: flex;
 	justify-content: center;
 	margin: 3em 0px;
 	gap: 10px;
 }
 
-.btn-filter{
+.btn-filter {
 	font-family: 'Syne';
 	font-weight: 700;
 	font-size: 16px;
@@ -186,7 +275,7 @@ li:hover {
 	padding: 10px 20px;
 }
 
-.btn-selected{
+.btn-selected {
 	color: white;
 	background-color: #1D6154;
 }
@@ -203,33 +292,41 @@ li:hover {
 	width: 100%;
 
 }
+
 #contact {
 	width: 50%;
 	margin: auto;
 }
-#contact > * {
+
+#contact>* {
 	text-align: center;
 
 }
-#contact h2{
+
+#contact h2 {
 	margin-bottom: 20px;
 }
+
 #contact form {
 	text-align: left;
-	margin-top:30px;
+	margin-top: 30px;
 	display: flex;
 	flex-direction: column;
 }
 
-#contact input, #connexion-form input{
+#contact input,
+#connexion-form input {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
-#contact label,  #connexion-form label{
+
+#contact label,
+#connexion-form label {
 	margin: 2em 0 1em 0;
 }
+
 #contact textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
@@ -240,10 +337,10 @@ input[type="submit"]{
 	font-weight: 700;
 	color: white;
 	background-color: #1D6154;
-	margin : 2em auto ;
+	margin: 2em auto;
 	width: 180px;
 	text-align: center;
-	border-radius: 60px ;
+	border-radius: 60px;
 }
 
 footer {
@@ -252,9 +349,9 @@ footer {
 	margin: 2em;
 }
 
-/******************************************** PAGE LOGIN *****************************************************/
+/******************************************** PAGE LOGIN ************************************************************/
 
-#main-login{
+#main-login {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -263,13 +360,14 @@ footer {
 	padding: 5% 0%;
 }
 
-#connexion-form{
+#connexion-form {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
 }
 
-#main-login a, #main-login p{
+#main-login a,
+#main-login p {
 	align-self: center;
 	color: #535353;
 	font-family: 'Syne';
@@ -277,19 +375,19 @@ footer {
 	font-size: 14px;
 }
 
-#main-login p{
+#main-login p {
 	margin-top: 30px;
 }
 
-#btn-connexion{
+#btn-connexion, #btn-add-modale, .upload-btn, #btn-valider{
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
 	background-color: #1D6154;
-	margin : 2em auto ;
+	margin: 2em auto;
 	width: 180px;
 	text-align: center;
-	border-radius: 60px ;
+	border-radius: 60px;
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
@@ -297,10 +395,10 @@ footer {
 	cursor: pointer;
 }
 
-/***************************************** CONNECTE ********************************************/
+/***************************************** CONNECTE **********************************************************************/
 
 
-#bandeau{
+#bandeau {
 	display: flex;
 	width: 100vw;
 	height: 50px;
@@ -310,16 +408,17 @@ footer {
 	gap: 15px;
 	position: relative;
 	left: calc(-50vw + 50%);
+	z-index: 2
 }
 
-#bandeau p{
+#bandeau p {
 	color: #ffffff;
 	font-family: 'Work Sans';
 	font-weight: 400;
 	font-size: 14px;
 }
 
-#bandeau i{
+#bandeau i {
 	color: #ffffff;
 }
 
@@ -330,67 +429,194 @@ footer {
 	color: black;
 	position: relative;
 	bottom: 52px;
-	left: 700px;
+	left: 60%;
 	border: none;
 	background-color: transparent;
 	cursor: pointer;
 
 }
 
-/***************************************** RESPONSIVE ********************************************/
+/***************************************** MODALE ****************************************************************/
 
-@media (max-width: 1024px){
-	#introduction {
-		flex-direction: column;
-	}
-
-	#introduction article{
-		margin: 0px 20px;
-		text-align: center;
-	}
+.modal-container {
+	position: absolute;
+	top: 0;
+	left: calc(-50vw + 50%);
+	width: 100vw;
+	height: 100vh;
 }
 
-@media (max-width: 767px){
+.overlay {
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.40);
+}
 
-	nav{
-		gap: 10px;
-	}
+.modale {
+	width: 95%;
+	max-width: 700px;
+	min-width: 300px;
+	display: flex;
+	flex-direction: column;
+	padding: 30px 50px;
+	gap: 30px;
+	background: white;
+	border-radius: 10px;
+	position: absolute;
+	top: 110%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 1;
+}
 
-	nav li{
-		font-size: 14px;
-	}
+.back-modale {
+	width: fit-content;
+	position: absolute;
+	left: 3%;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+}
 
-	#introduction{
-		gap: 30px;
-		padding: 0px;
-	}
+.close-modal {
+	width: fit-content;
+	position: relative;
+	left: 100%;
+	border: none;
+	background: transparent;
+	padding: 0;
+	cursor: pointer;
+}
 
-	.buttons{
-		flex-direction: column;
-		row-gap: 10px;
-		margin: 2em 0px
-	}
+.titre-modale {
+	text-align: center;
+	font-size: 30px;
+}
 
-	.btn-filter{
-		font-size: 14px;
-		padding: 5px 10px;
-	}
+#projets-modale {
+	width: 80%;
+	align-self: center;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-column-gap: 10px;
+	grid-row-gap: 50px;
+	padding-bottom: 50px;
+	border-bottom: 1px solid #B3B3B3;
+}
 
-	.gallery{
-		grid-template-columns: 1fr 1fr;
-		grid-column-gap: 10px;
-    	grid-row-gap: 10px;
-	}
 
-	figure{
-		min-width: 180px;
-	}
+#projets-modale figure{
+	width: fit-content;
+	min-height: fit-content;
+}
 
-	#contact{
-		width: 80%;
-	}
+#projets-modale img{
+	width: 100%;
+}
 
-	#contact form{
-		margin-top: 5px;
-	}
+#btn-add-modale{
+	align-self: center;
+	width: 45%;
+}
+
+.trash-btn{
+	position: absolute;
+	border: none;
+	border-radius: 5px;
+	background: black;
+	color: white;
+	width: 25px;
+	height: 25px;
+	transform: translate(-120%, 20%);
+	cursor: pointer;
+}
+
+/**************************** FORMULAIRE MODALE *******************************************************************/
+
+
+#formNouveauProjet{
+	display: flex;
+	flex-direction: column;
+	padding-bottom: 20px;
+	margin: auto;
+	width: 70%;
+	border-bottom: 1px solid #B3B3B3;
+}
+
+
+#formNouveauProjet input, #formNouveauProjet select{
+	margin: 10px 0px 30px;
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+#formNouveauProjet select{
+	appearance: none;
+	background-image: url(./icons/chevron-down-solid.svg);
+	background-repeat: no-repeat;
+	background-size: 15px 15px;
+	background-position: right 15px center;
+}
+
+#img-input{
+	height: 200px !important;
+	margin: 10px 0px 30px;
+	background: #E8F1F6;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	align-items: center;
+}
+
+#img-input img{
+	height: 85px;
+	width: 85px;
+}
+
+.upload-btn{
+	margin: 0;
+	box-shadow: none;
+	color: #3e7ea3;
+	background-color: #CBD6DC;
+	width: 200px;
+	max-height: 45px;
+	font-size: 15px;
+	line-height: 45px;
+}
+
+#upload{
+	display: none;
+}
+
+#img-input p{
+	color: #444444;
+}
+
+#btn-valider{
+	background-color: #A7A7A7;
+	width: 45%;
+	box-shadow: none;
+	margin: 15px auto 30px;
+	cursor: auto;
+}
+
+.btn-available{
+	background-color: #1D6154 !important;
+	cursor: pointer !important;
+}
+
+#img-upload{
+	height: 200px;
+	margin: 10px 0px 30px;
+	background: #E8F1F6;
+	display: flex;
+	justify-content: center;
+}
+
+.choosen-img{
+	max-height: 100%;
 }

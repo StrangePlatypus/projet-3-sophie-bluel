@@ -22,7 +22,9 @@ function ajoutListenerConnexion() {
             if(data.token != undefined){
             // On récupère le token et on l'inscrit dans le localStorage
             const token = data.token
+            const userId = data.userId
             sessionStorage.setItem("token", token)
+            sessionStorage.setItem("userId", userId)
             window.location.href = "index.html"
         } else {
             const messageErreur = document.getElementById("message-erreur")
