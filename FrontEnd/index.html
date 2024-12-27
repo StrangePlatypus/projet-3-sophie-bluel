@@ -26,17 +26,17 @@
 				<div id="img-input">
 					<img src="./assets/images/image-regular.svg">
 					<label for="upload"class="upload-btn">+ Ajouter photo</label>
-					<input id="upload" type="file" accept=".png, .jpg" required="true">
+					<input id="upload" type="file" accept=".png, .jpg" required>
 					<p>jpg, png : 4mo max</p>
 					<p id="size-error" class="hidden">Le fichier est trop lourd</p>
 				</div>
 				<div id="img-upload" class="hidden"></div>
 				<label for="titreNouveauProjet">Titre</label>
-				<input id="titreNouveauProjet" type="text" required="true">
+				<input id="titreNouveauProjet" type="text" required>
 				<label for="catNouveauProjet">Catégorie</label>
-				<select id="catNouveauProjet" required="true"></select>
+				<select id="catNouveauProjet" required></select>
 			</form>
-			<button id="btn-valider" class="hidden">Valider</button>
+			<button id="btn-valider" class="hidden btn-valider" disabled>Valider</button>
 			<div id="projets-modale"></div>
 			<button id="btn-add-modale">Ajouter une photo</button>
 		</div>

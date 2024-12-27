@@ -6,11 +6,9 @@ const gallery = document.querySelector(".gallery")
 let token = sessionStorage.getItem("token")
 let userId = sessionStorage.getItem("userId")
 let newProject = {
-    id: 0,
+    image: "string",
     title: "string",
-    imageUrl: "string",
-    categoryId: "string",
-    userId: 0
+    category: "integer"
 }
 
 
@@ -152,6 +150,7 @@ function modifierPage() {
     titrePortfolio.after(btnModifier)
     ajoutListenerModifier()
     genererPhotosModale()
+    afficherFormulaireNouveauProjet()
 }
 
 // GESTION DE LA MODALE //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,28 +164,36 @@ function ajoutListenerModifier() {
     })
 }
 
+function refreshModale() {
+    const titreModale = document.querySelector(".titre-modale")
+    titreModale.innerText = "Galerie photo"
+    const btnValider = document.querySelector("#btn-valider")
+    btnValider.classList.add("hidden")
+    btnValider.classList.remove("btn-available")
+    const btnAdd = document.querySelector("#btn-add-modale")
+    btnAdd.classList.remove("hidden")
+    const formNouveauProjet = document.querySelector("#formNouveauProjet")
+    formNouveauProjet.classList.add("hidden")
+    const title = document.getElementById("titreNouveauProjet")
+    title.value = ""
+    const projetsModale = document.getElementById("projets-modale")
+    projetsModale.classList.remove("hidden")
+    const btnBack = document.querySelector(".back-modale")
+    btnBack.classList.add("hidden")
+    const divInput = document.querySelector("#img-input")
+    divInput.classList.remove("hidden")
+    const divUpload = document.querySelector("#img-upload")
+    divUpload.classList.add("hidden")
+    divUpload.innerHTML = ""
+}
+
 function ajoutListenerModalTrigger() {
     const modalTrigger = document.querySelectorAll(".modal-trigger")
     modalTrigger.forEach(trigger => trigger.addEventListener("click", function () {
         const modaleContainer = document.querySelector(".modal-container")
         modaleContainer.classList.add("hidden")
-        const titreModale = document.querySelector(".titre-modale")
-        titreModale.innerText = "Galerie photo"
-        const btnValider = document.querySelector("#btn-valider")
-        btnValider.classList.add("hidden")
-        const btnAdd = document.querySelector("#btn-add-modale")
-        btnAdd.classList.remove("hidden")
-        const formNouveauProjet = document.querySelector("#formNouveauProjet")
-        formNouveauProjet.classList.add("hidden")
-        const projetsModale = document.getElementById("projets-modale")
-        projetsModale.classList.remove("hidden")
-        const btnBack = document.querySelector(".back-modale")
-        btnBack.classList.add("hidden")
-        const divInput = document.querySelector("#img-input")
-        divInput.classList.remove("hidden")
-        const divUpload = document.querySelector("#img-upload")
-        divUpload.classList.add("hidden")
-        divUpload.innerHTML = ""
+        refreshModale()
+        refreshNewProject()
         ajoutListenerModifier()
     }))
 }
@@ -209,33 +216,26 @@ async function genererPhotosModale() {
     }
     projetsModale.appendChild(fragment)
     ajoutListenerDelete()
-    ajoutListenerAjouterProjet()
     ajoutListenerProjetUpload()
 }
 
 function ajoutListenerBack() {
     const btnBack = document.querySelector(".back-modale")
     btnBack.addEventListener("click", function () {
-        const projetsModale = document.getElementById("projets-modale")
-        projetsModale.classList.remove("hidden")
-        btnBack.classList.add("hidden")
-        const btnValider = document.querySelector("#btn-valider")
-        btnValider.classList.add("hidden")
-        const titreModale = document.querySelector(".titre-modale")
-        titreModale.innerText = "Galerie photo"
-        const btnAdd = document.querySelector("#btn-add-modale")
-        btnAdd.classList.remove("hidden")
-        const formNouveauProjet = document.querySelector("#formNouveauProjet")
-        formNouveauProjet.classList.add("hidden")
-        const divInput = document.querySelector("#img-input")
-        divInput.classList.remove("hidden")
-        const divUpload = document.querySelector("#img-upload")
-        divUpload.classList.add("hidden")
-        divUpload.innerHTML = ""
+        refreshModale()
+        refreshNewProject()
     })
 }
 
 // GESTION AJOUT ET SUPPRESSION DE PROJETS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function refreshNewProject() {
+    newProject = {
+        title: "string",
+        imageUrl: "string",
+        categoryId: "string",
+    }
+}
 
 function ajoutListenerDelete() {
     const deleteButtons = document.querySelectorAll(".trash-btn")
@@ -246,16 +246,24 @@ function ajoutListenerDelete() {
                 method: "DELETE",
                 headers: {
                     "accept": "/",
-                    "Authorization": "Bearer" + token,
+                    "Authorization": `Bearer ${token}`,
                     "resquestContent-Type": "multipart/form-data"
                 }
-            }).then(response => console.log(response.status))
+            }).then((response) => {
+                if (response.ok) {
+                    alert("Projet supprimé avec succès.")
+                } else {
+                    alert("Erreur " + response.status + " lors de la suppression du projet.")
+                }
+                genererPhotosModale()
+                genererProjects()
+            })
 
         })
     })
 }
 
-function ajoutListenerAjouterProjet() {
+function afficherFormulaireNouveauProjet() {
     const btnAjouter = document.querySelector("#btn-add-modale")
     btnAjouter.addEventListener("click", async function () {
         const projetsModale = document.querySelector("#projets-modale")
@@ -289,15 +297,7 @@ function ajoutListenerAjouterProjet() {
     })
 }
 
-
 function ajoutListenerProjetUpload() {
-    let newProject = {
-        id: 0,
-        title: "string",
-        imageUrl: "string",
-        categoryId: "string",
-        userId: 0
-    }
     const imgInput = document.getElementById("upload")
     imgInput.addEventListener("change", function () {
         const file = imgInput.files[0]
@@ -307,6 +307,7 @@ function ajoutListenerProjetUpload() {
             if (file.size > tailleOk) {
                 messageErreur.classList.remove("hidden")
             } else {
+                // Création de l'emplacement d'affichage de l'image
                 const img = document.createElement("img")
                 img.classList.add("choosen-img")
                 img.file = file
@@ -317,12 +318,74 @@ function ajoutListenerProjetUpload() {
                 const divUpload = document.querySelector("#img-upload")
                 divUpload.classList.remove("hidden")
                 divUpload.appendChild(img)
-                newProject.title = img.title
-                newProject.imageUrl = img.src
                 messageErreur.classList.add("hidden")
+                enableBtnEnvoi()
+
+                // Utilisation du FileReader pour lire m'image en tant qu'ArrayBuffer pour pouvoir analyser chaque octet
+                const reader = new FileReader()
+                reader.onload = function (event) {
+                    const arrayBuffer = event.target.result
+                    // Chaque élément de Uint8Array représente un octet de l'image
+                    const binaryImg = new Uint8Array(arrayBuffer)
+                    let binaryString = ""
+                    // On parcoure ensuite chaque octet et on le convertit en sa représentation binaire avec byte.toString(2)
+                    // .padStart(8, '0')garantit que chaque représentation binaire est longue de 8 bits, complétée par des zéros non significatifs si nécessaire
+                    binaryImg.forEach(byte => {
+                        binaryString += byte.toString(2).padStart(8, '0') + ''
+                    })
+                    newProject.image = binaryString
+                }
+                reader.readAsArrayBuffer(file)
             }
         }
-        console.log(newProject)
     })
 }
 
+function enableBtnEnvoi() {
+    const formNouveauProjet = document.getElementById("formNouveauProjet")
+    formNouveauProjet.addEventListener("click", function () {
+        const imgInput = document.getElementById("upload")
+        const file = imgInput.files[0]
+        const title = document.getElementById("titreNouveauProjet").value
+        const select = document.getElementById("catNouveauProjet")
+        const choixCat = select.options[select.selectedIndex].text
+        if (file != null && title != undefined && choixCat != "") {
+            const btnEnvoi = document.getElementById("btn-valider")
+            btnEnvoi.classList.add("btn-available")
+            btnEnvoi.removeAttribute("disabled")
+            envoieNouveauProjetAPI()
+        }
+    })
+
+}
+
+function envoieNouveauProjetAPI() {
+    const btnEnvoi = document.getElementById("btn-valider")
+    btnEnvoi.addEventListener("click", e => {
+        e.preventDefault()
+        const title = document.getElementById("titreNouveauProjet").value
+        const select = document.getElementById("catNouveauProjet")
+        const idCat = select.options[select.selectedIndex].value
+        newProject.title = title
+        newProject.category = idCat
+        console.log(newProject)
+        fetch("http://localhost:5678/api/works", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            },
+            body: newProject
+        }).then((response) => {
+            if (response.ok) {
+                alert("Projet ajouté avec succès.")
+            } else {
+                alert("Erreur " + response.status + " lors de l'ajout du projet.")
+            }
+            refreshNewProject()
+            const modaleContainer = document.querySelector(".modal-container")
+            modaleContainer.classList.add("hidden")
+            ajoutListenerModifier()
+        })
+
+    })
+}
