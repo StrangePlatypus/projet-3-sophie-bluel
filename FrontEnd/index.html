@@ -23,18 +23,18 @@
 			<button class="close-modal modal-trigger"><i class="fa-solid fa-xmark fa-2xl"></i></button>
 			<h3 class="titre-modale">Galerie photo</h3>
 			<form id="formNouveauProjet" class="hidden">
-				<div id="img-input">
+				<div class="img-input">
 					<img src="./assets/images/image-regular.svg">
-					<label for="upload"class="upload-btn">+ Ajouter photo</label>
-					<input id="upload" type="file" accept=".png, .jpg" required>
+					<label for="upload" class="upload-btn">+ Ajouter photo</label>
 					<p>jpg, png : 4mo max</p>
-					<p id="size-error" class="hidden">Le fichier est trop lourd</p>
 				</div>
+				<input id="upload" type="file" accept=".png, .jpg">
+				<p id="size-error" class="hidden">Le fichier est trop lourd</p>
 				<div id="img-upload" class="hidden"></div>
 				<label for="titreNouveauProjet">Titre</label>
-				<input id="titreNouveauProjet" type="text" required>
+				<input id="titreNouveauProjet" type="text">
 				<label for="catNouveauProjet">Catégorie</label>
-				<select id="catNouveauProjet" required></select>
+				<select id="catNouveauProjet"></select>
 			</form>
 			<button id="btn-valider" class="hidden btn-valider" disabled>Valider</button>
 			<div id="projets-modale"></div>

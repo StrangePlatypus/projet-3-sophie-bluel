@@ -5,11 +5,7 @@ const allCategories = new Set()
 const gallery = document.querySelector(".gallery")
 let token = sessionStorage.getItem("token")
 let userId = sessionStorage.getItem("userId")
-let newProject = {
-    image: "string",
-    title: "string",
-    category: "integer"
-}
+
 
 
 async function initAccueil() {
@@ -69,6 +65,7 @@ function genererProjects(filter = 0) {
 // GESTION DES BOUTONS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function genererBoutons() {
     const divButtons = document.querySelector(".buttons")
+    divButtons.innerHTML = ""
     // création d'un fragment pour améliorer le web reflow
     const fragment = document.createDocumentFragment()
     // On crée le bouton 'Tous' (catégorie qui existe pas dans l'API)
@@ -132,7 +129,6 @@ function ajoutListenerLogout() {
         ajoutListenerLogin()
         sessionStorage.clear()
         genererBoutons()
-        ajoutListenerLogin()
     })
 }
 
@@ -151,6 +147,7 @@ function modifierPage() {
     ajoutListenerModifier()
     genererPhotosModale()
     afficherFormulaireNouveauProjet()
+    ajoutListenerProjetUpload()
 }
 
 // GESTION DE LA MODALE //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,11 +177,13 @@ function refreshModale() {
     projetsModale.classList.remove("hidden")
     const btnBack = document.querySelector(".back-modale")
     btnBack.classList.add("hidden")
-    const divInput = document.querySelector("#img-input")
+    const divInput = document.querySelector(".img-input")
     divInput.classList.remove("hidden")
     const divUpload = document.querySelector("#img-upload")
     divUpload.classList.add("hidden")
     divUpload.innerHTML = ""
+    const imgInput = document.getElementById("upload")
+    imgInput.value = ""
 }
 
 function ajoutListenerModalTrigger() {
@@ -193,8 +192,8 @@ function ajoutListenerModalTrigger() {
         const modaleContainer = document.querySelector(".modal-container")
         modaleContainer.classList.add("hidden")
         refreshModale()
-        refreshNewProject()
         ajoutListenerModifier()
+        genererProjects()
     }))
 }
 
@@ -205,6 +204,7 @@ async function genererPhotosModale() {
     const fragment = document.createDocumentFragment()
     for (let i = 0; i < allProjects.length; i++) {
         const figure = document.createElement("figure")
+        figure.dataset.id = allProjects[i].id
         figure.classList.add("figure-modale")
         figure.innerHTML = `<img src="${allProjects[i].imageUrl}" alt="${allProjects[i].title}">`
         const trashBtn = document.createElement("button")
@@ -216,26 +216,16 @@ async function genererPhotosModale() {
     }
     projetsModale.appendChild(fragment)
     ajoutListenerDelete()
-    ajoutListenerProjetUpload()
 }
 
 function ajoutListenerBack() {
     const btnBack = document.querySelector(".back-modale")
     btnBack.addEventListener("click", function () {
         refreshModale()
-        refreshNewProject()
     })
 }
 
 // GESTION AJOUT ET SUPPRESSION DE PROJETS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-function refreshNewProject() {
-    newProject = {
-        title: "string",
-        imageUrl: "string",
-        categoryId: "string",
-    }
-}
 
 function ajoutListenerDelete() {
     const deleteButtons = document.querySelectorAll(".trash-btn")
@@ -251,12 +241,18 @@ function ajoutListenerDelete() {
                 }
             }).then((response) => {
                 if (response.ok) {
+                    genererProjects()
+                    const projects = document.querySelectorAll("figure")
+                    projects.forEach(figure => {
+                        if (figure.dataset.id === deleteButton.id) {
+                            figure.remove()
+                        }
+                    })
                     alert("Projet supprimé avec succès.")
                 } else {
                     alert("Erreur " + response.status + " lors de la suppression du projet.")
                 }
                 genererPhotosModale()
-                genererProjects()
             })
 
         })
@@ -297,45 +293,49 @@ function afficherFormulaireNouveauProjet() {
     })
 }
 
+function listenerChangeImage() {
+    const btn = document.querySelector(".change-img")
+    btn.addEventListener("click", function (event) {
+        event.preventDefault()
+        const divUpload = document.querySelector("#img-upload")
+        divUpload.classList.add("hidden")
+        divUpload.innerHTML = ""
+        const imgInput = document.getElementById("upload")
+        imgInput.value = ""
+        const divInput = document.querySelector(".img-input")
+        divInput.classList.remove("hidden")
+    })
+}
+
 function ajoutListenerProjetUpload() {
     const imgInput = document.getElementById("upload")
     imgInput.addEventListener("change", function () {
         const file = imgInput.files[0]
         const messageErreur = document.querySelector("#size-error")
         if (file != null) {
-            const tailleOk = 4194304
+            const tailleOk = 4 * 1048576
             if (file.size > tailleOk) {
                 messageErreur.classList.remove("hidden")
             } else {
                 // Création de l'emplacement d'affichage de l'image
+                const btn = document.createElement("button")
+                btn.classList.add("change-img")
+                btn.innerHTML = '<i class="fa-solid fa-trash-can fa-xl"></i>'
                 const img = document.createElement("img")
                 img.classList.add("choosen-img")
                 img.file = file
                 img.src = URL.createObjectURL(file)
                 img.alt = img.title = file.name
-                const divInput = document.querySelector("#img-input")
+                const divInput = document.querySelector(".img-input")
                 divInput.classList.add("hidden")
                 const divUpload = document.querySelector("#img-upload")
+                divUpload.innerHTML = ""
                 divUpload.classList.remove("hidden")
                 divUpload.appendChild(img)
+                divUpload.appendChild(btn)
                 messageErreur.classList.add("hidden")
                 enableBtnEnvoi()
-
-                // Utilisation du FileReader pour lire m'image en tant qu'ArrayBuffer pour pouvoir analyser chaque octet
-                const reader = new FileReader()
-                reader.onload = function (event) {
-                    const arrayBuffer = event.target.result
-                    // Chaque élément de Uint8Array représente un octet de l'image
-                    const binaryImg = new Uint8Array(arrayBuffer)
-                    let binaryString = ""
-                    // On parcoure ensuite chaque octet et on le convertit en sa représentation binaire avec byte.toString(2)
-                    // .padStart(8, '0')garantit que chaque représentation binaire est longue de 8 bits, complétée par des zéros non significatifs si nécessaire
-                    binaryImg.forEach(byte => {
-                        binaryString += byte.toString(2).padStart(8, '0') + ''
-                    })
-                    newProject.image = binaryString
-                }
-                reader.readAsArrayBuffer(file)
+                listenerChangeImage()
             }
         }
     })
@@ -353,39 +353,67 @@ function enableBtnEnvoi() {
             const btnEnvoi = document.getElementById("btn-valider")
             btnEnvoi.classList.add("btn-available")
             btnEnvoi.removeAttribute("disabled")
-            envoieNouveauProjetAPI()
+            nouveauProjetAPI()
         }
     })
 
 }
 
-function envoieNouveauProjetAPI() {
+
+function nouveauProjetAPI() {
     const btnEnvoi = document.getElementById("btn-valider")
     btnEnvoi.addEventListener("click", e => {
         e.preventDefault()
-        const title = document.getElementById("titreNouveauProjet").value
+
+        const image = document.getElementById("upload").files[0];
+        const titre = document.getElementById("titreNouveauProjet").value
         const select = document.getElementById("catNouveauProjet")
-        const idCat = select.options[select.selectedIndex].value
-        newProject.title = title
-        newProject.category = idCat
-        console.log(newProject)
-        fetch("http://localhost:5678/api/works", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            },
-            body: newProject
-        }).then((response) => {
-            if (response.ok) {
-                alert("Projet ajouté avec succès.")
-            } else {
-                alert("Erreur " + response.status + " lors de l'ajout du projet.")
-            }
-            refreshNewProject()
-            const modaleContainer = document.querySelector(".modal-container")
-            modaleContainer.classList.add("hidden")
-            ajoutListenerModifier()
-        })
+        const categoryId = select.options[select.selectedIndex].value
+
+        const formData = new FormData()
+        formData.append("image", image)
+        formData.append("title", titre)
+        formData.append("category", categoryId)
+
+        for (const value of formData.values()) {
+            console.log(value)
+        }
+
+        envoieNouveauProjet(token, formData, titre)
+
+        // "Rechargement" dynamique de la page
+        const modaleContainer = document.querySelector(".modal-container")
+        modaleContainer.classList.add("hidden")
+        const figure = document.createElement("figure")
+        const img = document.createElement("img")
+        img.file = image
+        img.src = URL.createObjectURL(image)
+        img.alt = img.title = image.name
+        const caption = document.createElement("figcaption")
+        caption.innerText = titre
+        figure.appendChild(img)
+        figure.appendChild(caption)
+        gallery.appendChild(figure)
+        ajoutListenerModifier()
+        genererPhotosModale()
 
     })
+}
+
+function envoieNouveauProjet(token, formData, titre) {
+    fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        },
+        body: formData
+    }).then((response) => {
+        if (response.ok) {
+            alert("Projet " + titre + " ajouté avec succès.")
+        } else {
+            alert("Erreur " + response.status + " lors de l'ajout du projet.")
+        }
+    }
+    )
+
 }
