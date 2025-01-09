@@ -158,6 +158,9 @@ function modifierPage() {
     genererPhotosModale()
     afficherFormulaireNouveauProjet()
     ajoutListenerProjetUpload()
+    enableBtnEnvoi()
+    // .. on lance la fonction pour l'envoi de nouveau projet
+    nouveauProjetAPI()
 }
 
 // GESTION DE LA MODALE //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,7 +184,7 @@ function refreshModale() {
     btnAdd.classList.remove("hidden")
     const projetsModale = document.getElementById("projets-modale")
     projetsModale.classList.remove("hidden")
-    
+
     // On cache le bouton 'back', le formulaire et le bouton 'valider'
     const btnBack = document.querySelector(".back-modale")
     btnBack.classList.add("hidden")
@@ -194,7 +197,7 @@ function refreshModale() {
     // On re-affiche la div pour l'ajout de photo
     const divInput = document.querySelector(".img-input")
     divInput.classList.remove("hidden")
-    
+
     // On vide les champs du formulaire même s'il n'a pas été envoyé et on cache/vide la div de preview
     const title = document.getElementById("titreNouveauProjet")
     title.value = ""
@@ -346,8 +349,6 @@ function listenerChangeImage() {
         const btnEnvoi = document.getElementById("btn-valider")
         btnEnvoi.classList.remove("btn-available")
         btnEnvoi.addAttribute("disabled")
-        // .. on relance la vérification pour rendre le bouton 'valider' enable
-        enableBtnEnvoi()
     })
 }
 
@@ -385,7 +386,6 @@ function ajoutListenerProjetUpload() {
                 divUpload.appendChild(img)
                 divUpload.appendChild(btn)
                 messageErreur.classList.add("hidden")
-                enableBtnEnvoi()
                 listenerChangeImage()
             }
         }
@@ -407,8 +407,6 @@ function enableBtnEnvoi() {
             const btnEnvoi = document.getElementById("btn-valider")
             btnEnvoi.classList.add("btn-available")
             btnEnvoi.removeAttribute("disabled")
-            // .. et on lance la fonction pour l'envoi de nouveau projet
-            nouveauProjetAPI()
         }
     })
 
@@ -429,12 +427,16 @@ function nouveauProjetAPI() {
 
         // .. on les inscrit dans un formData() ..
         const formData = new FormData()
+        console.log(image)
         formData.append("image", image)
+        console.log(titre)
         formData.append("title", titre)
+        console.log(categoryId)
         formData.append("category", categoryId)
 
         // .. et on lance l'envoi du nouveau projet à l'API avec ces informations
         envoieNouveauProjet(token, formData, titre)
+        document.getElementById("formNouveauProjet").reset()
 
         // "Rechargement" dynamique de la page
         const modaleContainer = document.querySelector(".modal-container")
@@ -450,8 +452,6 @@ function nouveauProjetAPI() {
         figure.appendChild(caption)
         gallery.appendChild(figure)
         ajoutListenerModifier()
-        genererPhotosModale()
-
     })
 }
 
@@ -466,13 +466,13 @@ function envoieNouveauProjet(token, formData, titre) {
         if (response.ok) {
             // Si le projet est bien créé, on informe l'utilisateur et on rafraichi les photos de la modale 
             alert("Projet " + titre + " ajouté avec succès.")
-            const projetsModale = document.querySelector("#projets-modale")
-            projetsModale.innerHTML = ""
-            genererPhotosModale()
         } else {
             // Sinon on affiche le code erreur
             alert("Erreur " + response.status + " lors de l'ajout du projet.")
         }
+        const projetsModale = document.querySelector("#projets-modale")
+        projetsModale.innerHTML = ""
+        genererPhotosModale()
     }
     )
 }
